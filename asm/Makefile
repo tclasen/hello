@@ -1,12 +1,5 @@
 APP = hello
 
-
-
-TYPE = asm
-NAMESPACE = ${USER}
-DOCKERNAME := ${NAMESPACE}/${APP}:${TYPE}
-DOCKERFILE = deploy/Dockerfile
-
 SRCDIR = src
 SRC := ${SRCDIR}/${APP}.asm
 
@@ -16,10 +9,8 @@ OBJ := ${OBJDIR}/${APP}.o
 BINDIR = dist
 BIN := ${BINDIR}/${APP}.bin
 
-
-
 .PHONY: all
-all: docker-run
+all: run
 
 .PHONY: build
 build: ${BIN}
@@ -32,13 +23,9 @@ ${BIN}: ${OBJ}
 	mkdir -p ${BINDIR}
 	ld ${OBJ} -arch x86_64 -o ${BIN}
 
-.PHONY: docker-build
-docker-build: ${DOCKERFILE} ${SRC}
-	docker build -f ${DOCKERFILE} . -t ${DOCKERNAME} 1>/dev/null
-
-.PHONY: docker-run
-docker-run: docker-build
-	docker run --rm -it ${DOCKERNAME}
+.PHONY: run
+run: ${BIN}
+	@./${BIN}
 
 .PHONY: clean
 clean:

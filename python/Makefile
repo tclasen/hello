@@ -1,27 +1,18 @@
 APP = hello
 
-
-
-TYPE = python
-NAMESPACE = ${USER}
-DOCKERNAME := ${NAMESPACE}/${APP}:${TYPE}
-DOCKERFILE = deploy/Dockerfile
-
 BINDIR = src
 BIN := ${BINDIR}/${APP}.py
 
-
-
 .PHONY: all
-all: docker-run
+all: run
 
 .PHONY: build
-build: ${BIN}
+build:
 
-.PHONY: docker-build
-docker-build: ${DOCKERFILE} ${SRC}
-	docker build -f ${DOCKERFILE} . -t ${DOCKERNAME} 1>/dev/null
+.PHONY: run
+run: ${BIN}
+	@python3 ${BIN}
 
-.PHONY: docker-run
-docker-run: docker-build
-	docker run --rm -it ${DOCKERNAME}
+.PHONY: clean
+clean:
+	rm -rf **/__pycache__/
